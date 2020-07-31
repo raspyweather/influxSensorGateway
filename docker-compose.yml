@@ -1,22 +1,24 @@
 version: "3.2"
 
 services:
-  nodejs:
+  gateway:
     build:
       context: .
       dockerfile: Dockerfile
-    image: nodejs
-    container_name: nodejs
+    image: gateway
+    container_name: gateway
     restart: always
-    volumes:
-      - /sys/class/thermal:/sys/class/thermal
+    ports:
+      - "8080:8080"
     environment:
-      - DB_HOST:'localhost'
-      - DB_USER:'admin'
-      - DB_PASS:'admin'
+      - DB_HOST=influxdb
+      - DB_USER=admin
+      - DB_NAME=data
+      - DB_PASS=admin
     networks:
-      - app-network
+      - default
 
 networks:
-  app-network:
-    driver: bridge
+  default:
+    external:
+      name: docker-tig_docker-tig

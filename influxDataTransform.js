@@ -1,13 +1,16 @@
 module.exports = {
-    transformForInflux: (data, measurementName) => {
-        return data.map(entry => {
-            return {
-                measurement: measurementName,
-                fields: { ...data },
-                tags: {
-                    device: 'pi'
-                }
+    transformForInflux: (entry, measurementName) => {
+        return [{
+            measurement: measurementName,
+            fields: {
+                temperature: entry.temperature,
+                humidity: entry.humidity,
+                measurementsTaken: entry.measurementsTaken
+            },
+            tags: {
+                sensorId: entry.sensorId,
+                name: entry.name
             }
-        });
+        }];
     }
 };

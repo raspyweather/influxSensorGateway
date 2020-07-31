@@ -1,11 +1,4 @@
 
-const util = require('util');
-const readFile = util.promisify(require('fs').readFile);
-const readdir = util.promisify(require('fs').readdir);
-
-
-const cron = require('cron');
-
 const Influx = require('influx');
 
 const influxConfig = require('./influxConfig');
@@ -14,37 +7,62 @@ const influxTransform = require('./influxDataTransform').transformForInflux;
 const influx = new Influx.InfluxDB(influxConfig);
 const measurementName = influxConfig.schema[0].measurement;
 
-const getDirectories = source => readdir(source, { withFileTypes: true })
-    .then(dirs => dirs.filter(dirent => dirent.isDirectory()).map(dirent => dirent.name));
-
-const getThermalZones = () => getDirectories('/sys/class/thermal/')
-    .then(dirs => dirs.filter(x => x.startsWith('thermal_zone')));
-
-const readThermal = async (zone) => {
-    const temperature = parseFloat((await readFile(`/sys/class/thermal/${zone}/temp`)).toString()) / 1000;
-    const name = (await readFile(`'/sys/class/thermal/${zone}/type`)).toString();
-    return { temperature, name };
-}
+const express = require('express');
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
+const app = express();
 
 
-let zones = [];
+const port = 8080;
 
-getThermalZones().then(entries => zones.push(...entries));
+const transforms = {
+ // 'id': 'name
+};
 
-async function doMeasurement() {
+
+app.post('/ingress', jsonParser, (request, response) => {
     try {
-        let data = [];
-        for (const zone of zones) {
-            try { data.push(await readThermal(zone)); } catch (err) { console.error(err); }
+        const data = request.body;
+
+        if (!data ||
+            isNaN(data.humidity) ||
+            isNaN(data.temperature) ||
+            data.id === undefined ||
+            data.measurementsTaken === undefined) {
+            response.status(400);
+            response.send('Invalid data');
+            console.log({ data });
+            return;
         }
-        
-        console.log(data);
 
-        influx.writePoints(influxTransform(data, measurementName));
-    } catch (err) {
-        console.error(err);
+        if (transforms[data.id] === undefined) {
+            console.error(`Sensor ${data.id} is unknown!`);
+        }
+
+        const newData = {
+            sensorId: data.id,
+            name: transforms[data.id],
+            temperature: data.temperature,
+            humidity: data.humidity,
+            measurementsTaken: data.measurementsTaken,
+        };
+
+        response.status(200);
+        response.send();
+
+        influx.writePoints(influxTransform(newData, measurementName));
+    } catch (e) { console.error(e); }
+});
+
+app.get('/health', (request, response) => {
+    response.status(204);
+    response.send();
+});
+
+app.listen(port, (err) => {
+    if (err) {
+        return console.log('something bad happened', err);
     }
-}
 
-const cronjob = new cron.CronJob('* * * * *', doMeasurement, null, true, 'Europe/Berlin');
-cronjob.start();
+    console.log(`server is listening on ${port}`);
+});

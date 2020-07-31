@@ -1,17 +1,20 @@
 const Influx = require('influx');
 module.exports = {
     host: process.env.DB_HOST,
-    database: 'telegraf',
+    database: process.env.DB_NAME,
     protocol: 'http',
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     port: 8086,
     schema: [{
-        measurement: 'temperatures',
+        measurement: 'mainData',
         fields: {
             temperature: Influx.FieldType.FLOAT,
-            name: Influx.FieldType.STRING
+            humidity: Influx.FieldType.FLOAT,
+            measurementsTaken: Influx.FieldType.INTEGER,
+            name: Influx.FieldType.STRING,
+            sensorId: Influx.FieldType.STRING
         },
-        tags: ["name"]
+        tags: ["name","sensorId"]
     }]
 };

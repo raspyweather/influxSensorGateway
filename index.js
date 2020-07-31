@@ -16,7 +16,7 @@ const app = express();
 const port = 8080;
 
 const transforms = {
- // 'id': 'name
+    // 'id': 'name
 };
 
 
@@ -49,8 +49,8 @@ app.post('/ingress', jsonParser, (request, response) => {
 
         response.status(200);
         response.send();
-
         influx.writePoints(influxTransform(newData, measurementName));
+        console.log(`${new Date().toISOString()} |  Received datapoint ${data.id}|${transforms[data.id]}`);
     } catch (e) { console.error(e); }
 });
 

@@ -5,6 +5,8 @@ module.exports = {
             fields: {
                 temperature: entry.temperature,
                 humidity: entry.humidity,
+                pressure: entry.pressure,
+                rssi: entry.rssi,
                 measurementsTaken: entry.measurementsTaken
             },
             tags: {

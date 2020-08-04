@@ -11,6 +11,8 @@ module.exports = {
         fields: {
             temperature: Influx.FieldType.FLOAT,
             humidity: Influx.FieldType.FLOAT,
+            rssi: Influx.FieldType.FLOAT,
+            pressure: Influx.FieldType.FLOAT,
             measurementsTaken: Influx.FieldType.INTEGER,
             name: Influx.FieldType.STRING,
             sensorId: Influx.FieldType.STRING

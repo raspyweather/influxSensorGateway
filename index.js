@@ -49,6 +49,8 @@ app.post('/ingress', jsonParser, (request, response) => {
             name: transforms[data.id],
             temperature: data.temperature,
             humidity: data.humidity,
+            pressure: data.pressure,
+            rssi: data.rssi,
             measurementsTaken: data.measurementsTaken,
         };
 

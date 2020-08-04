@@ -35,8 +35,13 @@ app.post('/ingress', jsonParser, (request, response) => {
             return;
         }
 
+
+
         if (transforms[data.id] === undefined) {
             console.error(`Sensor ${data.id} is unknown!`);
+            response.status(404);
+            response.send();
+            return;
         }
 
         const newData = {

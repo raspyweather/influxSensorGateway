@@ -1,5 +1,5 @@
 const Influx = require('influx');
-module.exports = {
+export default {
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     protocol: 'http',
@@ -14,9 +14,12 @@ module.exports = {
             rssi: Influx.FieldType.FLOAT,
             pressure: Influx.FieldType.FLOAT,
             measurementsTaken: Influx.FieldType.INTEGER,
-            name: Influx.FieldType.STRING,
-            sensorId: Influx.FieldType.STRING
+
+            site: Influx.FieldType.STRING,
+            sensorId: Influx.FieldType.STRING,
+            sensorName: Influx.FieldType.STRING,
+            location: Influx.FieldType.STRING
         },
-        tags: ["name","sensorId"]
+        tags: ["site", "sensorId", "sensorName", "location"]
     }]
 };

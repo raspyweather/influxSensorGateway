@@ -1,7 +1,7 @@
-FROM node:14-alpine
+FROM node:alpine
 WORKDIR /usr/src/app
-COPY package.json ./
-RUN npm install
-
+COPY package.json .
+RUN npm install && npm install -g typescript 
 COPY . .
-CMD [ "node", "index.js" ]
+RUN tsc
+CMD ["node", "./dist/index.js"]

@@ -1,6 +1,6 @@
-module.exports = {
-    transformForInflux: (entry, measurementName) => {
-        return [{
+export default (entries: any[], measurementName: string): any => {
+    return entries.map(entry => {
+        return {
             measurement: measurementName,
             fields: {
                 temperature: entry.temperature,
@@ -13,6 +13,6 @@ module.exports = {
                 sensorId: entry.sensorId,
                 name: entry.name
             }
-        }];
-    }
+        };
+    });
 };

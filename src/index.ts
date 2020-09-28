@@ -1,8 +1,8 @@
-import mqttUpstream from './mqttUpload';
 import { createServer } from './httpHandlers';
+import mqttUpstream from './mqttUpload';
 import cron from 'cron';
 import { DataPoint } from './DataPoint.interface';
-// import uploadToInflux from './influxUpload';
+import uploadToInflux from './influxUpload';
 import { sensorNames } from './sensorNames';
 
 let buffer: DataPoint[] = [];
@@ -32,7 +32,7 @@ function uploadData() {
     const dataToUpload = buffer;
     buffer = [];
     if (dataToUpload.length === 0) { return; }
-    //  uploadToInflux(dataToUpload);
+    uploadToInflux(dataToUpload);
     mqttUpstream(dataToUpload);
 }
 

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "lint": "tslint src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No tests 🍪\" && exit 0"
   },
   "author": "",
   "license": "MIT",

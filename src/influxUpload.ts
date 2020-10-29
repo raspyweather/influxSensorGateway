@@ -1,5 +1,4 @@
-const Influx = require('influx');
-//import Influx from 'influx';
+import Influx from 'influx';
 
 import influxConfig from './influxConfig';
 import influxTransform from './influxDataTransform';

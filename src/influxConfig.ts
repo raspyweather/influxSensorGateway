@@ -1,4 +1,4 @@
-const Influx = require('influx');
+import Influx from 'influx';
 export default {
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
